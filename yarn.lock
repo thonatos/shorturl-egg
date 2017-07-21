@@ -4104,6 +4104,10 @@ preserve@^0.2.0:
   version "0.2.0"
   resolved "http://registry.npm.taobao.org/preserve/download/preserve-0.2.0.tgz#815ed1f6ebc65926f865b310c0713bcb3315ce4b"
 
+prettier-miscellaneous@^1.5.3:
+  version "1.5.3"
+  resolved "http://registry.npm.taobao.org/prettier-miscellaneous/download/prettier-miscellaneous-1.5.3.tgz#157e26f43b85bdb0c7420a0675c0e189d47b03ae"
+
 printable@^0.0.3:
   version "0.0.3"
   resolved "http://registry.npm.taobao.org/printable/download/printable-0.0.3.tgz#f653cb39b214b78049ae1403e2fb05d74a6d50e0"

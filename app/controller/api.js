@@ -2,7 +2,7 @@
 
 module.exports = app => {
   class ApiController extends app.Controller {
-    *shorten() {
+    * shorten() {
       const body = this.ctx.request.body;
       const errors = this.app.validator.validate(
         {
@@ -27,7 +27,7 @@ module.exports = app => {
       this.ctx.body = result;
     }
 
-    *expand() {
+    * expand() {
       const hash = this.ctx.params.hash;
       const result = yield this.service.shorten.expand(hash);
 
@@ -35,7 +35,7 @@ module.exports = app => {
       this.ctx.body = result;
     }
 
-    *count() {
+    * count() {
       const { offset = 0, limit = 10 } = this.ctx.query;
       const result = yield this.service.shorten.count(offset, limit);
       this.ctx.body = result;

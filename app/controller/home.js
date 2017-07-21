@@ -2,11 +2,11 @@
 
 module.exports = app => {
   class HomeController extends app.Controller {
-    *index() {
+    * index() {
       this.ctx.body = 'hi, egg';
     }
 
-    *redirect() {
+    * redirect() {
       const hash = this.ctx.params.hash;
       const result = yield this.service.shorten.expand(hash);
       if (!result) {

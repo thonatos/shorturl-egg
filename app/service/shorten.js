@@ -2,45 +2,46 @@
 
 module.exports = app => {
   class ShortService extends app.Service {
-    *get(query) {
+    * get(query) {
       const table = app.config.shorturl.table;
       const result = yield app.mysql.get(table, query);
       return result;
     }
 
-    *set(condition) {
+    * set(condition) {
       const table = app.config.shorturl.table;
       const result = yield app.mysql.insert(table, condition);
       return result;
     }
 
-    *select(condition) {
+    * select(condition) {
       const table = app.config.shorturl.table;
       const result = yield app.mysql.select(table, condition);
       return result;
     }
 
-    *update(condition) {
+    * update(condition) {
       const table = app.config.shorturl.table;
       const result = yield app.mysql.update(table, condition);
       return result;
     }
 
     /**
-     * 访问记录:该方法应该实现向队列的推送功能，不应该直接记录到数据库，以防止较大访问时堵塞数据库
-     * @param {Object} result 
-     * @return {Object} 
+     * 该方法应该实现向队列的推送功能，不应该直接记录到数据库，以防止较大访问时堵塞数据库
+     * @param {Object} result 记录信息
+     * @return {Object} true 结果
      * TODO: 实现访问记录功能
      */
-    *record(result) {
+    * record(result) {
       return result;
     }
 
     /**
      * 缩短链接
-     * @param {String} url 
+     * @param {String} url url地址
+     * @return {Object} result 由原始url与hash组成的结果
      */
-    *shorten(url) {
+    * shorten(url) {
       let result = yield this.get({ url });
 
       if (!result) {
@@ -57,11 +58,12 @@ module.exports = app => {
     }
 
     /**
-     * 展开短地址
-     * @param {String} hash 
-     * @param {Bealoon} record 
+     * 展开链接
+     * @param {String} hash 短链接hash
+     * @param {Bealoon} record 是否记录本次访问
+     * @return {Object} result 数据库中该地址的详细信息
      */
-    *expand(hash, record = false) {
+    * expand(hash, record = false) {
       const { cache_prefix, cache_maxAge } = app.config.shorturl;
 
       let result = yield app.redis.get(`${cache_prefix}:${hash}`);
@@ -90,10 +92,10 @@ module.exports = app => {
       return result;
     }
 
-    *count(offset = 0, limit = 10) {
+    * count(offset = 0, limit = 10) {
       const _limit = parseInt(limit) || 10;
       const result = yield this.select({
-        orders: [['created', 'desc'], ['id', 'desc']],
+        orders: [[ 'created', 'desc' ], [ 'id', 'desc' ]],
         limit: _limit > 100 ? 100 : _limit,
         offset: parseInt(offset),
       });
