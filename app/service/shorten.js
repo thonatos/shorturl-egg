@@ -69,12 +69,15 @@ module.exports = app => {
       if (!result) {
         const id = this.ctx.helper.getIntId(hash) || 0;
         result = yield this.get({ id });
-        yield app.redis.set(
-          `${cache_prefix}:${hash}`,
-          JSON.stringify(result),
-          'ex',
-          cache_maxAge
-        );
+
+        if (result) {
+          yield app.redis.set(
+            `${cache_prefix}:${hash}`,
+            JSON.stringify(result),
+            'ex',
+            cache_maxAge
+          );
+        }
       }
 
       // 如果result是字符串，需要转换成json

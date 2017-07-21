@@ -4,15 +4,18 @@ module.exports = app => {
   class ApiController extends app.Controller {
     *shorten() {
       const body = this.ctx.request.body;
-      this.app.validator.validate(
+      const errors = this.app.validator.validate(
         {
-          url: {
-            type: 'url',
-            require: true,
-          },
+          url: 'url',
         },
         body
       );
+
+      if (errors) {
+        const err = new Error(JSON.stringify(errors));
+        err.status = 400;
+        throw err;
+      }
 
       // url
       const { url } = body;
