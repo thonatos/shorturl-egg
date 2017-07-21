@@ -1,42 +1,42 @@
-'use strict'
+'use strict';
 
 module.exports = app => {
   class ApiController extends app.Controller {
-    /**
-     * shorten
-     */
     *shorten() {
-      const body = this.ctx.request.body
+      const body = this.ctx.request.body;
       this.app.validator.validate(
         {
           url: {
             type: 'url',
-            require: true
-          }
+            require: true,
+          },
         },
         body
-      )
+      );
 
       // url
-      const { url } = body
+      const { url } = body;
 
       // store
-      let result = yield this.service.shorten.shorten(url)
+      const result = yield this.service.shorten.shorten(url);
 
       // return
-      this.ctx.body = result
+      this.ctx.body = result;
     }
 
-    /**
-     * expand
-     */
     *expand() {
-      const hash = this.ctx.params.hash
-      const result = yield this.service.shorten.expand(hash)
+      const hash = this.ctx.params.hash;
+      const result = yield this.service.shorten.expand(hash);
 
       // return
-      this.ctx.body = result
+      this.ctx.body = result;
+    }
+
+    *count() {
+      const { offset = 0, limit = 10 } = this.ctx.query;
+      const result = yield this.service.shorten.count(offset, limit);
+      this.ctx.body = result;
     }
   }
-  return ApiController
-}
+  return ApiController;
+};

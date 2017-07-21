@@ -1,58 +1,102 @@
-'use strict'
-
-const TABLE_NAME = 'url'
-const MAX_AGE = 3600 * 24 * 7
+'use strict';
 
 module.exports = app => {
   class ShortService extends app.Service {
     *get(query) {
-      const result = yield app.mysql.get(TABLE_NAME, query)
-      return result
+      const table = app.config.shorturl.table;
+      const result = yield app.mysql.get(table, query);
+      return result;
     }
 
     *set(condition) {
-      const result = yield app.mysql.insert(TABLE_NAME, condition)
-      return result
+      const table = app.config.shorturl.table;
+      const result = yield app.mysql.insert(table, condition);
+      return result;
+    }
+
+    *select(condition) {
+      const table = app.config.shorturl.table;
+      const result = yield app.mysql.select(table, condition);
+      return result;
     }
 
     *update(condition) {
-      const result = yield app.mysql.update(TABLE_NAME, condition)
-      return result
+      const table = app.config.shorturl.table;
+      const result = yield app.mysql.update(table, condition);
+      return result;
     }
 
-    *shorten(url) {
-      let result = yield this.get({ url })
-      if (!result) {
-        result = yield this.set({ url })
-      }
-
-      // hash
-      const hash = this.ctx.helper.bs58Encode(result.id)
-      return hash
-    }
-
+    /**
+     * 访问记录:该方法应该实现向队列的推送功能，不应该直接记录到数据库，以防止较大访问时堵塞数据库
+     * @param {Object} result 
+     * @return {Object} 
+     * TODO: 实现访问记录功能
+     */
     *record(result) {
-      const view = result.view + 1
-      const updated = Object.assign({}, result, { view })
-      yield this.update(updated)
-      return updated
+      return result;
     }
 
-    *expand(hash, record = true) {
-      let result = yield app.redis.get(hash)
+    /**
+     * 缩短链接
+     * @param {String} url 
+     */
+    *shorten(url) {
+      let result = yield this.get({ url });
+
       if (!result) {
-        const id = this.ctx.helper.bs58Decode(hash)
-        result = yield this.get({ id })
-        yield app.redis.set(hash, JSON.stringify(result), 'ex', MAX_AGE)
+        result = yield this.set({ url });
       }
 
-      if (record && result) {
-        result = typeof result === 'string' ? JSON.parse(result) : result
-        result = yield this.record(result)
+      const id = result.id || result.insertId;
+      const hash = this.ctx.helper.getHashId(id);
+
+      return {
+        url,
+        hash,
+      };
+    }
+
+    /**
+     * 展开短地址
+     * @param {String} hash 
+     * @param {Bealoon} record 
+     */
+    *expand(hash, record = false) {
+      const { cache_prefix, cache_maxAge } = app.config.shorturl;
+
+      let result = yield app.redis.get(`${cache_prefix}:${hash}`);
+
+      if (!result) {
+        const id = this.ctx.helper.getIntId(hash) || 0;
+        result = yield this.get({ id });
+        yield app.redis.set(
+          `${cache_prefix}:${hash}`,
+          JSON.stringify(result),
+          'ex',
+          cache_maxAge
+        );
       }
 
-      return result
+      // 如果result是字符串，需要转换成json
+      result = typeof result === 'string' ? JSON.parse(result) : result;
+
+      if (result && record) {
+        yield this.record(result);
+      }
+
+      return result;
+    }
+
+    *count(offset = 0, limit = 10) {
+      const _limit = parseInt(limit) || 10;
+      const result = yield this.select({
+        orders: [['created', 'desc'], ['id', 'desc']],
+        limit: _limit > 100 ? 100 : _limit,
+        offset: parseInt(offset),
+      });
+
+      return result;
     }
   }
-  return ShortService
-}
+  return ShortService;
+};
