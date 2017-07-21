@@ -8,6 +8,23 @@ egg-shorturl
 
 see [egg docs][egg] for more detail.
 
+### Database
+
+```mysql
+create table shorturl.url
+(
+	id bigint auto_increment
+		primary key,
+	url varchar(256) not null,
+	created datetime default CURRENT_TIMESTAMP null,
+	constraint url_id_uindex
+		unique (id),
+	constraint url_url_uindex
+		unique (url)
+)
+;
+```
+
 ### Development
 ```shell
 $ npm install
