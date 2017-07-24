@@ -8,7 +8,7 @@ exports.site = {
 
 exports.mysql = {
   client: {
-    host: '192.168.2.121',
+    host: 'mysql',
     port: '3306',
     user: 'root',
     password: 'mysql',
@@ -19,8 +19,12 @@ exports.mysql = {
 exports.redis = {
   client: {
     port: 6379,
-    host: '127.0.0.1',
+    host: 'redis',
     password: null,
     db: 0,
   },
+};
+
+exports.elasticsearch = {
+  host: 'elasticsearch:9200',
 };
