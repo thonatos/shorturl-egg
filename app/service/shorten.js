@@ -27,16 +27,6 @@ module.exports = app => {
     }
 
     /**
-     * 该方法应该实现向队列的推送功能，不应该直接记录到数据库，以防止较大访问时堵塞数据库
-     * @param {Object} result 记录信息
-     * @return {Object} true 结果
-     * TODO: 实现访问记录功能
-     */
-    * record(result) {
-      return result;
-    }
-
-    /**
      * 缩短链接
      * @param {String} url url地址
      * @return {Object} result 由原始url与hash组成的结果
@@ -63,7 +53,7 @@ module.exports = app => {
      * @param {Bealoon} record 是否记录本次访问
      * @return {Object} result 数据库中该地址的详细信息
      */
-    * expand(hash, record = false) {
+    * expand(hash) {
       const { cache_prefix, cache_maxAge } = app.config.shorturl;
 
       let result = yield app.redis.get(`${cache_prefix}:${hash}`);
@@ -84,10 +74,6 @@ module.exports = app => {
 
       // 如果result是字符串，需要转换成json
       result = typeof result === 'string' ? JSON.parse(result) : result;
-
-      if (result && record) {
-        yield this.record(result);
-      }
 
       return result;
     }

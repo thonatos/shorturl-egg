@@ -7,16 +7,29 @@ module.exports = app => {
     }
 
     * redirect() {
-      const hash = this.ctx.params.hash;
-      const result = yield this.service.shorten.expand(hash);
-      if (!result) {
+      const { ctx, service } = this;
+      const hash = ctx.params.hash;
+      const record = yield service.shorten.expand(hash);
+      if (!record) {
         const err = new Error('no record found');
         err.status = 404;
         throw err;
       }
 
+      const ip = ctx.ip;
+      const ua = ctx.get('User-Agent');
+      const date = new Date();
+
+      yield service.report.post({
+        hash,
+        ip,
+        ua,
+        date,
+        record,
+      });
+
       this.ctx.status = 302;
-      this.ctx.redirect(result.url);
+      this.ctx.redirect(record.url);
     }
   }
   return HomeController;
