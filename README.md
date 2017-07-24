@@ -21,8 +21,7 @@ create table shorturl.url
 		unique (id),
 	constraint url_url_uindex
 		unique (url)
-)
-;
+);
 ```
 
 ### Development
