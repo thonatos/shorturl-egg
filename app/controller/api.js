@@ -23,6 +23,7 @@ module.exports = app => {
       // store
       const result = yield this.service.shorten.shorten(url);
       result.shorturl = app.config.site.domain + result.hash;
+
       // return
       this.ctx.body = result;
     }
