@@ -3,7 +3,7 @@
 module.exports = app => {
   class HomeController extends app.Controller {
     * index() {
-      this.ctx.body = 'hi, egg';
+      yield this.ctx.render('rct/build/index.html');
     }
 
     * redirect() {

@@ -1,0 +1,40 @@
+.wrap{
+  height: 100vh;
+  display: flex;
+  flex-flow: column;
+}
+
+.section{
+  flex: 1;
+  padding-top: 2em;
+}
+
+
+#footer{
+  background: #f6f6f6;
+}
+
+.footer{
+  margin: 0 auto;
+  max-width: 960px;
+  text-align: center;
+  font-size: 0.8em;
+  padding: 2em;
+}
+
+ul.links {
+    list-style: none;
+    padding: 0;
+}
+
+ul.links li {
+    display: inline-block;
+    padding: 0 0.5em;
+    border-left: 1px solid #999;
+}
+
+ul.links li:first-child {
+    display: inline-block;
+    padding: 0 1em;
+    border-left: none;
+}
