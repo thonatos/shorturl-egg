@@ -2,6 +2,10 @@
 
 // add your config here
 
+exports.site = {
+  domain: 'https://swz.li/',
+};
+
 exports.mysql = {
   client: {
     host: '192.168.2.121',

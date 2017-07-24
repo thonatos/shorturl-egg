@@ -2,6 +2,10 @@
 
 // add your config here
 
+exports.site = {
+  domain: 'http://localhost:7001/',
+};
+
 exports.mysql = {
   client: {
     host: '127.0.0.1',
