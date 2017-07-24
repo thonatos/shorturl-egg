@@ -8,7 +8,8 @@
     "egg": "^1.4.0",
     "egg-mysql": "^3.0.0",
     "egg-redis": "^1.0.2",
-    "egg-validate": "^1.0.0"
+    "egg-validate": "^1.0.0",
+    "elasticsearch": "^13.2.0"
   },
   "devDependencies": {
     "autod": "^2.8.0",
