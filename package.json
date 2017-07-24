@@ -1,7 +1,7 @@
 {
   "name": "shorturl",
   "version": "1.0.0",
-  "description": "egg-shorturl",
+  "description": "shorturl-egg",
   "private": true,
   "dependencies": {
     "bs58": "^4.0.1",
