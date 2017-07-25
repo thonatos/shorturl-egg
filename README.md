@@ -22,6 +22,39 @@ create table shorturl.url
 );
 ```
 
+```elasticsearch
+PUT _ingest/pipeline/geoip
+{
+  "description" : "Add geoip info",
+  "processors" : [
+    {
+      "geoip" : {
+        "field" : "ip"
+      }
+    }
+  ]
+}
+
+PUT shorturl
+{
+  "mappings": {
+    "view": {
+      "_all": {
+        "enabled": false
+      },
+      "properties": {
+        "ip": {
+          "type": "ip"
+        },
+        "date": {
+          "type": "date"
+        }
+      }
+    }
+  }
+}
+```
+
 ### Application
 
 - app/config/config.prod.js
