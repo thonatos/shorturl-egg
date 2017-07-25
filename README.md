@@ -18,11 +18,7 @@ create table shorturl.url
 	id bigint auto_increment
 		primary key,
 	url varchar(256) not null,
-	created datetime default CURRENT_TIMESTAMP null,
-	constraint url_id_uindex
-		unique (id),
-	constraint url_url_uindex
-		unique (url)
+	created datetime default CURRENT_TIMESTAMP null
 );
 ```
 
