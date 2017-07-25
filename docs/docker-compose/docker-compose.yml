@@ -1,0 +1,46 @@
+version: '2'
+services:
+
+  redis:
+    image: redis:3.2-alpine
+    command: redis-server --appendonly yes # --requirepass password
+    volumes:
+        - ./data/redis:/data
+    networks:
+      - impl        
+
+  elasticsearch:
+    image: implementsio/elasticsearch
+    environment:
+      ES_JAVA_OPTS: "-Xms1g -Xmx1g"
+    volumes:
+      - ./data/elasticsearch:/usr/share/elasticsearch/data
+    networks:
+      - impl
+
+  kibana:
+    image: kibana:5
+    volumes:
+      - ./config/kibana/kibana.yml:/etc/kibana/kibana.yml
+    # ports:
+    #  - "5601:5601"
+    networks:
+      - impl
+    depends_on:
+      - elasticsearch
+
+  shorturl:
+    image: thonatos/shorturl
+    volumes: 
+      - ./config/config.prod.js:/usr/src/app/config/config.prod.js
+     ports:
+      - "7001:7001"      
+    networks:
+      - impl
+    depends_on:
+      - redis
+      - elasticsearch    
+
+networks:
+  impl:
+    driver: bridge
