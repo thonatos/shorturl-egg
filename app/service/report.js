@@ -4,17 +4,21 @@ const elasticsearch = require('elasticsearch');
 
 module.exports = app => {
 
-  const es = new elasticsearch.Client({
-    host: app.config.elasticsearch.host,
-  });
-
   class ReportService extends app.Service {
+
+    constructor() {
+      super();
+      this.es = new elasticsearch.Client({
+        host: app.config.elasticsearch.host,
+      });
+    }
+
     /**
      * 将访问记录发送给elasticsearch进行记录
      * @param {Object} record 记录内容
      */
     * post(record) {
-      yield es.create({
+      yield this.es.create({
         index: 'shorturl',
         type: 'view',
         id: new Date().getTime(),
