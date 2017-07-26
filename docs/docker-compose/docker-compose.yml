@@ -4,15 +4,29 @@ services:
   redis:
     image: redis:3.2-alpine
     command: redis-server --appendonly yes # --requirepass password
+    # ports:      
+    #   - 6379:6379
     volumes:
         - ./data/redis:/data
     networks:
       - impl        
 
+  mysql:
+    image: mysql:5.7.13
+    restart: always
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=mysql
+    networks:
+      - impl          
+
   elasticsearch:
     image: implementsio/elasticsearch
     environment:
       ES_JAVA_OPTS: "-Xms1g -Xmx1g"
+    # ports:      
+    #   - 9200:9200
     volumes:
       - ./data/elasticsearch:/usr/share/elasticsearch/data
     networks:
@@ -21,7 +35,7 @@ services:
   kibana:
     image: kibana:5
     volumes:
-      - ./config/kibana/kibana.yml:/etc/kibana/kibana.yml
+      - ./config/kibana/kibana.yml:/etc/kibana/kibana.yml:ro
     # ports:
     #  - "5601:5601"
     networks:
@@ -31,16 +45,32 @@ services:
 
   shorturl:
     image: thonatos/shorturl
+    environment:
+      EGG_SERVER_ENV: "prod"
     volumes: 
-      - ./config/config.prod.js:/usr/src/app/config/config.prod.js
-     ports:
-      - "7001:7001"      
+      - ./config/shorturl/config.local.js:/usr/src/app/config/config.local.js
+      - ./config/shorturl/config.prod.js:/usr/src/app/config/config.prod.js
     networks:
       - impl
     depends_on:
       - redis
-      - elasticsearch    
-
+      - mysql
+      - elasticsearch
+    
+  nginx:
+    image: nginx:1.9
+    ports:
+      - 5601:5601
+      - 7001:7001
+    volumes:      
+      - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - impl
+    depends_on:
+      - elasticsearch      
+      - shorturl
+      - kibana
+    
 networks:
   impl:
     driver: bridge
