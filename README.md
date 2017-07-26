@@ -42,7 +42,9 @@ see [docs/docker-compose](https://github.com/thonatos/shorturl-egg/tree/master/d
 
 ### Database
 
-```mysql
+```
+// mysql
+
 create table shorturl.url
 (
 	id bigint auto_increment
@@ -52,7 +54,9 @@ create table shorturl.url
 );
 ```
 
-```elasticsearch
+```
+// elasticsearch
+
 // geoip configure
 PUT _ingest/pipeline/geoip
 {
