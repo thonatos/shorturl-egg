@@ -8,6 +8,36 @@ shorturl powered by egg.js
 
 see [egg docs][egg] for more detail.
 
+### Development
+```shell
+$ npm install
+$ npm run dev
+$ open http://localhost:7001
+```
+
+### Deploy
+
+Use `EGG_SERVER_ENV=prod` to enable prod mode
+
+```shell
+$ EGG_SERVER_ENV=prod npm start
+```
+
+### npm scripts
+
+- Use `npm run lint` to check code style.
+- Use `npm test` to run unit test.
+- Use `npm run autod` to auto detect dependencies upgrade, see [autod](https://www.npmjs.com/package/autod) for more detail.
+
+### docker-compose
+
+```shell
+cd docs/docker-compose
+docker-compose up
+```
+
+see [docs/docker-compose](https://github.com/thonatos/shorturl-egg/tree/master/docs/docker-compose) for more detail.
+
 ## Config
 
 ### Database
@@ -23,6 +53,7 @@ create table shorturl.url
 ```
 
 ```elasticsearch
+// geoip configure
 PUT _ingest/pipeline/geoip
 {
   "description" : "Add geoip info",
@@ -35,6 +66,7 @@ PUT _ingest/pipeline/geoip
   ]
 }
 
+// mappings
 PUT shorturl
 {
   "mappings": {
@@ -134,27 +166,5 @@ exports.elasticsearch = {
   }
 ]
 ```
-
-### Development
-```shell
-$ npm install
-$ npm run dev
-$ open http://localhost:7001
-```
-
-### Deploy
-
-Use `EGG_SERVER_ENV=prod` to enable prod mode
-
-```shell
-$ EGG_SERVER_ENV=prod npm start
-```
-
-### npm scripts
-
-- Use `npm run lint` to check code style.
-- Use `npm test` to run unit test.
-- Use `npm run autod` to auto detect dependencies upgrade, see [autod](https://www.npmjs.com/package/autod) for more detail.
-
 
 [egg]: https://eggjs.org
