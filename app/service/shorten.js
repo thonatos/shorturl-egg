@@ -14,6 +14,12 @@ module.exports = app => {
       return result;
     }
 
+    * del(condition) {
+      const table = app.config.shorturl.table;
+      const result = yield app.mysql.delete(table, condition);
+      return result;
+    }
+
     * select(condition) {
       const table = app.config.shorturl.table;
       const result = yield app.mysql.select(table, condition);
@@ -32,14 +38,34 @@ module.exports = app => {
      * @return {Object} result 由原始url与hash组成的结果
      */
     * shorten(url) {
-      let result = yield this.get({ url });
+      const exist = yield this.get({ url });
 
-      if (!result) {
-        result = yield this.set({ url });
+      if (!exist) {
+        const insert = yield this.set({ url });
+        const id = insert.insertId;
+        const hash = this.ctx.helper.getHashId(id);
+
+        const existHash = yield this.get({ hash });
+        if (existHash) {
+          yield this.del({ id });
+          const err = new Error('Invalid Hash');
+          err.status = 400;
+          throw err;
+        }
+
+        yield this.update({
+          id,
+          url,
+          hash,
+        });
+
+        return {
+          url,
+          hash,
+        };
       }
 
-      const id = result.id || result.insertId;
-      const hash = this.ctx.helper.getHashId(id);
+      const { hash } = exist;
 
       return {
         url,
@@ -59,8 +85,7 @@ module.exports = app => {
       let result = yield app.redis.get(`${cache_prefix}:${hash}`);
 
       if (!result) {
-        const id = this.ctx.helper.getIntId(hash) || 0;
-        result = yield this.get({ id });
+        result = yield this.get({ hash });
 
         if (result) {
           yield app.redis.set(
