@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Qrcode</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      height: 100vh;
+      overflow: hidden;
+      background: rgba(232, 232, 232, 0.8);
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .qrcode {
+      width: 180px;
+      box-shadow: 0px 0 3px 1px rgba(0, 0, 0, 0.7);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <img class="qrcode" src="{{ dataUrl }}" alt="" />
+  </div>
+</body>
+
+</html>
