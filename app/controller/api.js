@@ -43,6 +43,15 @@ module.exports = app => {
     }
 
     * update() {
+      const token = this.ctx.get('Authorization-Token') || null;
+      const { token: authToken } = app.config.auth;
+
+      if (authToken !== token) {
+        const err = new Error('no access');
+        err.status = 403;
+        throw err;
+      }
+
       const body = this.ctx.request.body;
       const errors = this.app.validator.validate(
         {

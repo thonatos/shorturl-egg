@@ -34,5 +34,9 @@ module.exports = appInfo => {
     table: 'url',
   };
 
+  config.auth = {
+    token: 'token',
+  };
+
   return config;
 };
