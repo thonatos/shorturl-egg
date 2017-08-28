@@ -69,11 +69,33 @@ module.exports = app => {
       const { table } = app.config.shorturl;
       const _limit = parseInt(limit) || 10;
       const result = yield app.mysql.select(table, {
-        orders: [[ 'created', 'desc' ], [ 'id', 'desc' ]],
+        orders: [['created', 'desc'], ['id', 'desc']],
         limit: _limit > 100 ? 100 : _limit,
         offset: parseInt(offset),
       });
       return result;
+    }
+
+    * update({ hash, url }) {
+      const { table, cache_prefix } = app.config.shorturl;
+      const exist = yield app.mysql.get(table, { hash });
+      if (!exist) {
+        const error = new Error('hash not exist');
+        error.status = 400;
+        throw error;
+      }
+      const { id } = exist;
+      yield app.mysql.update(table, {
+        id,
+        url,
+      });
+
+      yield app.redis.del(`${cache_prefix}:${hash}`);
+
+      return {
+        hash,
+        url,
+      };
     }
   }
   return ShortService;

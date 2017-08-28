@@ -41,6 +41,27 @@ module.exports = app => {
       const result = yield this.service.shorten.count(offset, limit);
       this.ctx.body = result;
     }
+
+    * update() {
+      const body = this.ctx.request.body;
+      const errors = this.app.validator.validate(
+        {
+          url: 'url',
+          hash: 'string',
+        },
+        body
+      );
+
+      if (errors) {
+        const err = new Error(JSON.stringify(errors));
+        err.status = 400;
+        throw err;
+      }
+
+      const res = yield this.service.shorten.update(body);
+
+      this.ctx.body = res;
+    }
   }
   return ApiController;
 };
