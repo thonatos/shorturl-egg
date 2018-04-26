@@ -44,14 +44,14 @@ see [docs/docker-compose](https://github.com/thonatos/shorturl-egg/tree/master/d
 
 ```
 // mysql
-
-create table shorturl.url
-(
-	id bigint auto_increment
-		primary key,
-	url varchar(256) not null,
-	created datetime default CURRENT_TIMESTAMP null
-);
+DROP TABLE IF EXISTS  `url`;
+CREATE TABLE `url` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `url` varchar(512) NOT NULL,
+  `created` datetime DEFAULT CURRENT_TIMESTAMP,
+  `hash` varchar(512) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=200 DEFAULT CHARSET=utf8mb4;
 ```
 
 ```
